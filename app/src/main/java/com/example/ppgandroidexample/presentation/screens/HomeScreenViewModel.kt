@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ppgandroidexample.common.Resource
 import com.example.ppgandroidexample.domain.use_case.GetSubscriberIdUC
-import com.example.ppgandroidexample.domain.use_case.GetSubscriberLabelsUC
 import com.example.ppgandroidexample.domain.use_case.IsSubscribedUC
 import com.example.ppgandroidexample.domain.use_case.RegisterSubscriberUC
 import com.example.ppgandroidexample.domain.use_case.SendBeaconUC
@@ -29,7 +28,6 @@ class HomeScreenViewModel @Inject constructor(
     private val getSubIdUC: GetSubscriberIdUC,
     private val isSubscribedUC: IsSubscribedUC,
     private val sendBeaconUC: SendBeaconUC,
-    private val getSubLabelsUC: GetSubscriberLabelsUC,
     private val sendTransactionalPushUC: TransactionalPushUC
 ) : ViewModel() {
     private val _state = mutableStateOf(HomeScreenState())
@@ -189,39 +187,6 @@ class HomeScreenViewModel @Inject constructor(
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
                         message = "Beacon sent successfully. Click 'Get Subscriber Labels' for results",
-                        isLoading = false,
-                        error = null,
-                        messageColor = Color.Green
-                    )
-                }
-
-                is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        error = result.message ?: "An unexpected error occurred",
-                        isLoading = false,
-                        message = null,
-                        messageColor = Color.Red
-                    )
-                }
-
-                is Resource.Loading -> _state.value = _state.value.copy(isLoading = true)
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getSubscriberLabels() {
-        getSubLabelsUC().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    val labels = result.data
-                    val labelsString = if (labels?.isEmpty() == false) {
-                        labels.joinToString(separator = "\n") { (key, value) -> "$key: $value" }
-                    } else {
-                        "List of labels is empty"
-                    }
-
-                    _state.value = _state.value.copy(
-                        message = labelsString,
                         isLoading = false,
                         error = null,
                         messageColor = Color.Green

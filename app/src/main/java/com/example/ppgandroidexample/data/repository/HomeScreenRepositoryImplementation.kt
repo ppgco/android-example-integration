@@ -33,10 +33,6 @@ class HomeScreenRepositoryImplementation @Inject constructor(
         ppg.createBeacon().appendTag(tag, label, "append", ttl).send()
     }
 
-    override suspend fun getSubscriberLabels(): MutableList<Pair<String, String>> {
-        return ppg.createBeacon().getTags()
-    }
-
     override suspend fun sendTestPushNotification() {
         val currentSubId = ppg.getSubscriberId()
         val projectId = PPGMetaData.getProjectId()

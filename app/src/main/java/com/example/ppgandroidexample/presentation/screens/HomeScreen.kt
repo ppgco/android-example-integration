@@ -50,7 +50,6 @@ fun HomeScreen(
         Pair("Subscriber ID") { viewModel.getSubscriberId() },
         Pair("Is Subscribed") { viewModel.isSubscriberActive() },
         Pair("Send Beacon") { showSendBeaconCard = true },
-        Pair("Get Subscriber Labels") { viewModel.getSubscriberLabels() },
         Pair("Send Push Notification") { viewModel.sendTransactionalPush() }
     )
 

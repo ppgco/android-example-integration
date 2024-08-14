@@ -92,14 +92,17 @@ fun HomeScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(15.dp))
+
             if (!successMessage.isNullOrBlank() || !errorMsg.isNullOrBlank()) {
                 MessageSnackbar(
                     message = successMessage ?: errorMsg,
-                    0.5f,
+                    0.9f,
                     msgColor = homeScreenState.messageColor
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
+
         }
         if (showSendBeaconCard) {
             Box(

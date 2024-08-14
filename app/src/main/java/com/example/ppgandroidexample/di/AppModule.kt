@@ -45,7 +45,7 @@ object AppModule {
             .addInterceptor(AuthInterceptor(apiKey))
             .build()
         return Retrofit.Builder()
-            .baseUrl("https://api.master1.qappg.co")
+            .baseUrl("https://api.pushpushgo.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

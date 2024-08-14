@@ -13,13 +13,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
-import com.example.ppgandroidexample.presentation.screens.HomeScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.ppgandroidexample.presentation.navigation.SetUpNavGraph
 import com.example.ppgandroidexample.ui.theme.PPGAndroidExampleTheme
 import com.pushpushgo.sdk.PushPushGo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
@@ -44,11 +48,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PPGAndroidExampleTheme(darkTheme = true) {
+                navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
+                    SetUpNavGraph(navController = navController)
                 }
             }
         }

@@ -50,7 +50,7 @@ class HomeScreenRepositoryImplementation @Inject constructor(
                 direction = "ltr",
                 sound = "",
                 icon = "https://next.master1.qappg.co/dummy-icon.png",
-                image = "https://ipla.pluscdn.pl/p/versions/5f/5fcnx1y27w4czjezmjv9uns17f3tjwts/pbg.jpg",
+                image = "https://next.master1.qappg.co/dummy-icon.png",
                 ttl = 72
             ), to = currentSubId
         )

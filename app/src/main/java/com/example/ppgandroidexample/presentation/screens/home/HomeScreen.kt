@@ -1,4 +1,4 @@
-package com.example.ppgandroidexample.presentation.screens
+package com.example.ppgandroidexample.presentation.screens.home
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -30,11 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.ppgandroidexample.presentation.common_components.MessageSnackbar
 import com.example.ppgandroidexample.presentation.common_components.SendBeaconCard
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val homeScreenState = viewModel.state.value

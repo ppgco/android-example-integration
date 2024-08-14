@@ -1,4 +1,4 @@
-package com.example.ppgandroidexample.presentation.screens
+package com.example.ppgandroidexample.presentation.screens.home
 
 import android.Manifest
 import android.content.Context

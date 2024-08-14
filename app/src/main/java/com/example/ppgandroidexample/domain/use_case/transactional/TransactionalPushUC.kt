@@ -1,4 +1,4 @@
-package com.example.ppgandroidexample.domain.use_case
+package com.example.ppgandroidexample.domain.use_case.transactional
 
 import retrofit2.HttpException
 import com.example.ppgandroidexample.common.Resource

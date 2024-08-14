@@ -2,7 +2,7 @@ package com.example.ppgandroidexample.data.repository
 
 import com.example.ppgandroidexample.common.PPGMetaData
 import com.example.ppgandroidexample.data.remote.PPGTransactionalAPI
-import com.example.ppgandroidexample.data.remote.dto.TransactionalNotificationDTO
+import com.example.ppgandroidexample.data.remote.dto.TransactionalNotificationByIdDTO
 import com.example.ppgandroidexample.domain.repository.HomeScreenRepository
 import com.pushpushgo.sdk.PushPushGo
 import javax.inject.Inject
@@ -36,14 +36,14 @@ class HomeScreenRepositoryImplementation @Inject constructor(
     override suspend fun sendTestPushNotification() {
         val currentSubId = ppg.getSubscriberId()
         val projectId = PPGMetaData.getProjectId()
-        val notification = TransactionalNotificationDTO(
-            omitCapping = true, message = TransactionalNotificationDTO.Message(
+        val notification = TransactionalNotificationByIdDTO(
+            omitCapping = true, message = TransactionalNotificationByIdDTO.Message(
                 actions = listOf(
-                    TransactionalNotificationDTO.Message.Action(
+                    TransactionalNotificationByIdDTO.Message.Action(
                         clickUrl = "https://docs.pushpushgo.company/", title = "PushPushGo"
                     )
                 ),
-                title = "This is transactional push notification",
+                title = "This is transactional push notification from Home Screen",
                 content = "Sent to your Subscriber's ID",
                 clickUrl = "https://docs.pushpushgo.company/developers-guide/rest-api/transactional-push",
                 requireInteraction = true,

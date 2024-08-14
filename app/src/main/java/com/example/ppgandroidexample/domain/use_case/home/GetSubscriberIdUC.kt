@@ -1,4 +1,4 @@
-package com.example.ppgandroidexample.domain.use_case
+package com.example.ppgandroidexample.domain.use_case.home
 
 import retrofit2.HttpException
 import com.example.ppgandroidexample.common.Resource
@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class UnregisterSubscriberUC @Inject constructor(
+class GetSubscriberIdUC @Inject constructor(
     private val repository: HomeScreenRepository
 ) {
-    operator fun invoke(): Flow<Resource<Unit>> = flow {
+    operator fun invoke(): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            val unregister = repository.unregisterSubscriber()
-            emit(Resource.Success(unregister))
+            val subId = repository.getSubscriberId()
+            emit(Resource.Success(subId))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         } catch (e: Exception) {

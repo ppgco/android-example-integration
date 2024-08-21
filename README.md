@@ -29,12 +29,31 @@ Application is built using Jetpack Compose / Material3 / Retrofit2 / DaggerHilt 
    * Pick JSON type and click create
    * Download file and upload it in PushPushGo Application (/project/providers) in FCM v1 credentials section
 
-## Functionalities
+## SDK Functionalities
 App implements some of PPG android-sdk methods, as well as a transactional API for sending push notification
 * **Register** - register subscriber
 * **Unregister** - unregister subscriber
 * **Subscriber ID** - returns subscriber ID if registered
 * **Is Subscribed** - returns subscriber status
 * **Send beacon** - add tag with label to your subscriber by sending beacon
-* **Get Subscriber Labels** - returns list of subscriber's tags with labels
 * **Send Push Notification** - send a test transactional push notification to your subscriber
+
+## Transactional API
+In transactional API section you can find buttons which implements some of transactional endpoints (https://docs.pushpushgo.company/developers-guide/rest-api/transactional-push).
+
+**Example implementation details:**
+In case of this application we used MVVM architecture + Retrofit2 along with Use Cases approach.
+
+1. Define interface for transactional api (/data/remote/PPGTransactionalAPI.kt)
+2. Create transactional repository interface (/domain/repository/TransactionalScreenRepository.kt)
+3. Implement that repository (/data/repository/TransactionalScreenRepositoryImplementation.kt)
+4. **optionally** Create Use Cases (/domain/use-case/transactional/...)
+5. Use implemented functions (or Use Cases) in view model (/presentation/screens/transactional/TransactionalScreenViewModel.kt)
+6. Inject view model to your screen (/presentation/screens/transactional/TransactionalScreen)
+
+In transactional section you can test functionalities like:
+* **Send transactional push to subscriber's ID or external ID**
+* **Get list of Subscribers with given external ID**
+* **Assign external ID to your subscriber**
+* **Unassign your subscriber from current external ID**
+* **Remove given external ID from all Subscribers**

@@ -41,7 +41,6 @@ fun TransactionalScreen(
     val transactionalScreenState = viewModel.state.value
     val errorMsg = transactionalScreenState.error
     val successMessage = transactionalScreenState.message
-    val externalIdState = transactionalScreenState.externalId
     var clickedButton by remember { mutableStateOf<String?>(null) }
     var showExternalIdCard by remember { mutableStateOf(false) }
     var actionToPerform: ((String) -> Unit)? by remember { mutableStateOf(null) }

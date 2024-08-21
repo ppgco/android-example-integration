@@ -33,14 +33,11 @@ class MainActivity : ComponentActivity() {
         // Grant post notification permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
+                    this, Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    0
+                    this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0
                 )
             }
         }
@@ -50,10 +47,10 @@ class MainActivity : ComponentActivity() {
             PPGAndroidExampleTheme(darkTheme = true) {
                 navController = rememberNavController()
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     SetUpNavGraph(navController = navController)
+                    intent?.let { handleIntent(it) }
                 }
             }
         }
@@ -62,5 +59,13 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         PushPushGo.getInstance().handleBackgroundNotificationClick(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val uri = intent.data
+        if (uri != null) {
+            navController.navigate(uri)
+        }
     }
 }

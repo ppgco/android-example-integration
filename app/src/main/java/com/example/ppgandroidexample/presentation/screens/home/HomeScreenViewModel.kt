@@ -14,7 +14,7 @@ import com.example.ppgandroidexample.domain.use_case.home.GetSubscriberIdUC
 import com.example.ppgandroidexample.domain.use_case.home.IsSubscribedUC
 import com.example.ppgandroidexample.domain.use_case.home.RegisterSubscriberUC
 import com.example.ppgandroidexample.domain.use_case.home.SendBeaconUC
-import com.example.ppgandroidexample.domain.use_case.transactional.TransactionalPushUC
+import com.example.ppgandroidexample.domain.use_case.transactional.TransactionalPushByIdUC
 import com.example.ppgandroidexample.domain.use_case.home.UnregisterSubscriberUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -28,8 +28,9 @@ class HomeScreenViewModel @Inject constructor(
     private val getSubIdUC: GetSubscriberIdUC,
     private val isSubscribedUC: IsSubscribedUC,
     private val sendBeaconUC: SendBeaconUC,
-    private val sendTransactionalPushUC: TransactionalPushUC
+    private val sendTransactionalPushUC: TransactionalPushByIdUC
 ) : ViewModel() {
+
     private val _state = mutableStateOf(HomeScreenState())
     val state: State<HomeScreenState> = _state
 

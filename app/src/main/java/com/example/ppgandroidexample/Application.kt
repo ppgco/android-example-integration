@@ -13,9 +13,6 @@ class Application : Application() {
         // Getting data for PPG transactional part of App
         PPGMetaData.initialize(this)
 
-        // this is for testing environment only
-        // in production u should only use PushPushGo.getInstance(this)
-        // as api key and projectId is provided by AndroidManifest.xml
         PushPushGo.getInstance(this)
     }
 }

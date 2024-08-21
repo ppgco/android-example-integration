@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ppgandroidexample.presentation.common_components.MessageSnackbar
 import com.example.ppgandroidexample.presentation.common_components.SendBeaconCard
+import com.example.ppgandroidexample.presentation.navigation.Screens
 
 @Composable
 fun HomeScreen(
@@ -66,6 +67,18 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "SDK section",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Cyan,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
             buttons.chunked(2).forEach { rowButtons ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -103,6 +116,22 @@ fun HomeScreen(
                     msgColor = homeScreenState.messageColor
                 )
                 Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { navController.navigate(Screens.Transactional.route) },
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text(
+                    text = "Nav to transactional section",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
 
         }

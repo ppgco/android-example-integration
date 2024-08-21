@@ -40,7 +40,7 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
         return transactionalApi.sendTransactionalPushBySubscriberId(projectId, notification)
     }
 
-    override suspend fun sendNotificationByExternalId(): MessageIdDTO {
+    override suspend fun sendNotificationByExternalId(externalId: String): MessageIdDTO {
         val notification = TransactionalNotificationByExternalIdDTO(
             omitCapping = true, message = TransactionalNotificationByExternalIdDTO.Message(
                 actions = listOf(
@@ -57,7 +57,7 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
                 icon = "https://next.master1.qappg.co/dummy-icon.png",
                 image = "https://next.master1.qappg.co/dummy-icon.png",
                 ttl = 72
-            ), externalId = currentSubId
+            ), externalId = externalId
         )
         return transactionalApi.sendTransactionalPushByExternalId(projectId, notification)
     }
@@ -77,7 +77,7 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
         return transactionalApi.forgetSubscriberIdFromExternalId(projectId, externalId)
     }
 
-    override suspend fun unassignSubscriberIdFromExternalId(externalId: String): SuccessDTO {
-        return transactionalApi.unassignSubscriberFromCurrentExternalId(projectId, externalId)
+    override suspend fun unassignSubscriberIdFromExternalId(): SuccessDTO {
+        return transactionalApi.unassignSubscriberFromCurrentExternalId(projectId, currentSubId)
     }
 }

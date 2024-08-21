@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.example.ppgandroidexample.presentation.screens.home.HomeScreen
 import com.example.ppgandroidexample.presentation.screens.transactional.TransactionalScreen
 
@@ -18,7 +19,8 @@ fun SetUpNavGraph(
         composable(route = Screens.Home.route) {
             HomeScreen(navController = navController)
         }
-        composable(route = Screens.Transactional.route) {
+        composable(route = Screens.Transactional.route,
+            deepLinks = listOf(navDeepLink { uriPattern = "app://www.example.com/transactional" })) {
             TransactionalScreen(navController = navController)
         }
     }

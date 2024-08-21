@@ -2,20 +2,21 @@ package com.example.ppgandroidexample.domain.use_case.transactional
 
 import retrofit2.HttpException
 import com.example.ppgandroidexample.common.Resource
-import com.example.ppgandroidexample.domain.repository.HomeScreenRepository
+import com.example.ppgandroidexample.data.remote.dto.SuccessDTO
+import com.example.ppgandroidexample.domain.repository.TransactionalScreenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class TransactionalPushUC @Inject constructor(
-    private val repository: HomeScreenRepository
+class ForgetExternalIdFromAllSubsUC @Inject constructor(
+    private val repository: TransactionalScreenRepository
 ) {
-    operator fun invoke(): Flow<Resource<Unit>> = flow {
+    operator fun invoke(externalId: String): Flow<Resource<SuccessDTO>> = flow {
         try {
             emit(Resource.Loading())
-            val sendTransactionalPush = repository.sendTestPushNotification()
-            emit(Resource.Success(sendTransactionalPush))
+            val forgetExternalId = repository.forgetExternalIdFromAllSubscribers(externalId)
+            emit(Resource.Success(forgetExternalId))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         } catch (e: Exception) {

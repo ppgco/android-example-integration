@@ -3,7 +3,9 @@ package com.example.ppgandroidexample.di
 import com.example.ppgandroidexample.common.PPGMetaData
 import com.example.ppgandroidexample.data.remote.PPGTransactionalAPI
 import com.example.ppgandroidexample.data.repository.HomeScreenRepositoryImplementation
+import com.example.ppgandroidexample.data.repository.TransactionalScreenRepositoryImplementation
 import com.example.ppgandroidexample.domain.repository.HomeScreenRepository
+import com.example.ppgandroidexample.domain.repository.TransactionalScreenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +37,12 @@ object AppModule {
     @Singleton
     fun provideHomeScreenRepository(api: PPGTransactionalAPI): HomeScreenRepository {
         return HomeScreenRepositoryImplementation(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionalScreenRepository(api: PPGTransactionalAPI): TransactionalScreenRepository {
+        return TransactionalScreenRepositoryImplementation(api)
     }
 
     @Provides

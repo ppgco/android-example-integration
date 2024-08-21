@@ -6,12 +6,12 @@ import com.example.ppgandroidexample.data.remote.dto.SuccessDTO
 
 interface TransactionalScreenRepository {
     suspend fun sendNotificationBySubscriberId(): MessageIdDTO
-    suspend fun sendNotificationByExternalId(): MessageIdDTO
+    suspend fun sendNotificationByExternalId(externalId: String): MessageIdDTO
     suspend fun getAllSubscribersWithGivenExternalId(externalId: String): SubscribersWithGivenExternalIdDTO
     suspend fun assignExternalIdToSubscriber(
         externalId: String
     ): SubscribersWithGivenExternalIdDTO
 
     suspend fun forgetExternalIdFromAllSubscribers(externalId: String): SuccessDTO
-    suspend fun unassignSubscriberIdFromExternalId(externalId: String): SuccessDTO
+    suspend fun unassignSubscriberIdFromExternalId(): SuccessDTO
 }

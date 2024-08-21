@@ -17,18 +17,32 @@
         android:theme="@style/Theme.PPGAndroidExample"
         tools:targetApi="31">
         <activity
-            android:launchMode="singleTop"
-            android:name=".presentation.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.PPGAndroidExample">
+            android:name=".presentation.SplashScreenActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:launchMode="standard"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".presentation.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.PPGAndroidExample">
             <intent-filter>
                 <action android:name="APP_PUSH_CLICK" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="www.example.com"
+                    android:pathPrefix="/transactional"
+                    android:scheme="app" />
             </intent-filter>
         </activity>
 

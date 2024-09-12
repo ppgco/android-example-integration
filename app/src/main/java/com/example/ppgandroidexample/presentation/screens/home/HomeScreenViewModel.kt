@@ -187,7 +187,7 @@ class HomeScreenViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
-                        message = "Beacon sent successfully. Click 'Get Subscriber Labels' for results",
+                        message = "Beacon sent successfully. In PPG app data on subscriber will update up to 15 min",
                         isLoading = false,
                         error = null,
                         messageColor = Color.Green

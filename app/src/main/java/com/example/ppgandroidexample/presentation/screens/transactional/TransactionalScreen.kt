@@ -37,6 +37,12 @@ fun TransactionalScreen(
     navController: NavController,
     viewModel: TransactionalScreenViewModel = hiltViewModel()
 ) {
+    // Alternative: If you don't use InAppMessageHelper.setupWithNavController() in NavGraph,
+    // you can trigger in-app messages manually on each screen using LaunchedEffect:
+    //
+    // LaunchedEffect(Screens.Transactional.route) {
+    //     InAppMessages.getInstance().showMessagesOnRoute(Screens.Transactional.route)
+    // }
 
     val transactionalScreenState = viewModel.state.value
     val errorMsg = transactionalScreenState.error

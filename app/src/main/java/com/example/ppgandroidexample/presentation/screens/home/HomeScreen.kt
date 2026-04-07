@@ -47,6 +47,13 @@ fun HomeScreen(
     var showSendBeaconCard by remember { mutableStateOf(false) }
     var clickedButton by remember { mutableStateOf<String?>(null) }
 
+    // Alternative: If you don't use InAppMessageHelper.setupWithNavController() in NavGraph,
+    // you can trigger in-app messages manually on each screen using LaunchedEffect:
+    //
+    // LaunchedEffect(Screens.Home.route) {
+    //     InAppMessages.getInstance().showMessagesOnRoute(Screens.Home.route)
+    // }
+
     val buttons = listOf(
         Pair("Register") { viewModel.registerSubscriber(context) },
         Pair("Unregister") { viewModel.unregisterSubscriber() },
@@ -126,6 +133,22 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Nav to transactional section",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = { navController.navigate(Screens.InAppMessages.route) },
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text(
+                    text = "Nav to in-app messages section",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,

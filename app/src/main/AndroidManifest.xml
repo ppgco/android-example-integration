@@ -48,10 +48,10 @@
 
         <meta-data
             android:name="com.pushpushgo.apikey"
-            android:value="YOUR API KEY" />
+            android:value="${ppgApiKey}" />
         <meta-data
             android:name="com.pushpushgo.projectId"
-            android:value="YOUR PROJECT ID" />
+            android:value="${ppgProjectId}" />
     </application>
 
 </manifest>

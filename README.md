@@ -27,7 +27,7 @@ Application is built using Jetpack Compose / Material3 / Retrofit2 / DaggerHilt 
    * Click ADD KEY
    * Click CREATE NEW KEY
    * Pick JSON type and click create
-   * Download file and upload it in PushPushGo Application (/project/providers) in FCM v1 credentials section
+   * Download file and upload it in PushPushGo Application (https://next.pushpushgo.com/projects/yourProjectID/settings/integration/fcm)
 
 ## SDK Functionalities
 App implements some of PPG android-sdk methods, as well as a transactional API for sending push notification

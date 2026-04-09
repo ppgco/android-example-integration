@@ -16,7 +16,12 @@ class Application : Application() {
 
         PushPushGo.getInstance(this)
 
-        // Initialize In-App Messages SDK
-        InAppMessagesSDK.initialize(application = this, projectId = "Your project id", apiKey = "Your API key")
+        // Initialize In-App Messages SDK (credentials read from AndroidManifest meta-data via PPGMetaData)
+        InAppMessagesSDK.initialize(
+            application = this,
+            projectId = PPGMetaData.getProjectId(),
+            apiKey = PPGMetaData.getApiKey(),
+            debug = true,
+        )
     }
 }

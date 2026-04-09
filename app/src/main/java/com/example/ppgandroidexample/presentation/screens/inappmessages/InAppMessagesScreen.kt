@@ -47,7 +47,7 @@ fun InAppMessagesScreen(
     // you can trigger in-app messages manually on each screen using LaunchedEffect:
     //
     // LaunchedEffect(Screens.InAppMessages.route) {
-    //     InAppMessages.getInstance().showMessagesOnRoute(Screens.InAppMessages.route)
+    //     InAppMessagesSDK.getInstance().showActiveMessages(Screens.InAppMessages.route)
     // }
 
     Box(modifier = Modifier.fillMaxSize()) {

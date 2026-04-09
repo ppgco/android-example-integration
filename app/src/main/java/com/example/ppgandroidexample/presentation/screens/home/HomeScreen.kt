@@ -51,7 +51,7 @@ fun HomeScreen(
     // you can trigger in-app messages manually on each screen using LaunchedEffect:
     //
     // LaunchedEffect(Screens.Home.route) {
-    //     InAppMessages.getInstance().showMessagesOnRoute(Screens.Home.route)
+    //     InAppMessagesSDK.getInstance().showActiveMessages(Screens.Home.route)
     // }
 
     val buttons = listOf(

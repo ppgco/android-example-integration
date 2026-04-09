@@ -41,7 +41,7 @@ fun TransactionalScreen(
     // you can trigger in-app messages manually on each screen using LaunchedEffect:
     //
     // LaunchedEffect(Screens.Transactional.route) {
-    //     InAppMessages.getInstance().showMessagesOnRoute(Screens.Transactional.route)
+    //     InAppMessagesSDK.getInstance().showActiveMessages(Screens.Transactional.route)
     // }
 
     val transactionalScreenState = viewModel.state.value

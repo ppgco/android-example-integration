@@ -28,6 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             PushPushGo.getInstance().handleBackgroundNotificationClick(intent)
+            PushPushGo.getInstance().handleLiveActivityClick(intent)
         }
 
         // Grant post notification permission
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         PushPushGo.getInstance().handleBackgroundNotificationClick(intent)
+        PushPushGo.getInstance().handleLiveActivityClick(intent)
         handleIntent(intent)
     }
 

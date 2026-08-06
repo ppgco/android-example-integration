@@ -17,12 +17,12 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.example.ppgandroidexample"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.ppgandroidexample"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -91,6 +91,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    // hiltViewModel() moved here from hilt-navigation-compose
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -101,4 +103,9 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.ppg.sdk)
     implementation(libs.ppg.inappmessages)
+
+    // Live Activities subscribe/unsubscribe return a Guava ListenableFuture;
+    // kotlinx-coroutines-guava adds `await()` to bridge it to coroutines
+    implementation(libs.guava)
+    implementation(libs.kotlinx.coroutines.guava)
 }

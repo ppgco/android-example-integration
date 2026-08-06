@@ -43,6 +43,11 @@
                     android:host="www.example.com"
                     android:pathPrefix="/transactional"
                     android:scheme="app" />
+                <!-- Deep link carried by the Live Activity notification -->
+                <data
+                    android:host="www.example.com"
+                    android:pathPrefix="/live-activities"
+                    android:scheme="app" />
             </intent-filter>
         </activity>
 

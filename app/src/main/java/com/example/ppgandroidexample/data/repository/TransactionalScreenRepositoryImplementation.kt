@@ -16,8 +16,22 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
     private val transactionalApi: PPGTransactionalAPI
 ): TransactionalScreenRepository {
 
-    private val currentSubId = PushPushGo.getInstance().getSubscriberId()
+    /**
+     * Read on every call, not cached in a field: this repository is a singleton,
+     * so a value captured at construction time would stay empty for the whole
+     * process lifetime when the subscriber is registered afterwards - and the
+     * API rejects an empty `to` with HTTP 400.
+     */
+    private val currentSubId: String
+        get() = PushPushGo.getInstance().getSubscriberId()
+
     private val projectId = PPGMetaData.getProjectId()
+
+    /** The SDK returns an empty string when this device is not registered yet. */
+    private fun requireSubscriberId(): String = currentSubId.ifEmpty {
+        throw IllegalStateException("No subscriber yet - tap Register on the SDK section screen first")
+    }
+
     override suspend fun sendNotificationBySubscriberId(): MessageIdDTO {
         val notification = TransactionalNotificationByIdDTO(
             omitCapping = true, message = TransactionalNotificationByIdDTO.Message(
@@ -35,7 +49,7 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
                 icon = "https://next.master1.qappg.co/dummy-icon.png",
                 image = "https://next.master1.qappg.co/dummy-icon.png",
                 ttl = 72
-            ), to = currentSubId
+            ), to = requireSubscriberId()
         )
         return transactionalApi.sendTransactionalPushBySubscriberId(projectId, notification)
     }
@@ -69,7 +83,7 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
     override suspend fun assignExternalIdToSubscriber(
         externalId: String
     ): SubscribersWithGivenExternalIdDTO {
-        val requestBody = AssignExternalIdDTO(externalId, currentSubId)
+        val requestBody = AssignExternalIdDTO(externalId, requireSubscriberId())
         return transactionalApi.assignExternalIdToSubscriber(projectId, requestBody)
     }
 
@@ -78,6 +92,6 @@ class TransactionalScreenRepositoryImplementation @Inject constructor(
     }
 
     override suspend fun unassignSubscriberIdFromExternalId(): SuccessDTO {
-        return transactionalApi.unassignSubscriberFromCurrentExternalId(projectId, currentSubId)
+        return transactionalApi.unassignSubscriberFromCurrentExternalId(projectId, requireSubscriberId())
     }
 }

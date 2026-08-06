@@ -20,8 +20,8 @@ Application is built using Jetpack Compose / Material3 / Retrofit2 / DaggerHilt 
 1. Copy `app/google-services.json.example` to `app/google-services.json` and fill in your Firebase project values.
 2. Add your PPG credentials to `local.properties` in the project root:
    ```
-   PPG_PROJECT_ID=your-project-id
-   PPG_API_KEY=your-api-key
+   ppg.projectId=your-project-id
+   ppg.apiKey=your-api-key
    ```
    These are injected as AndroidManifest meta-data at build time. To generate an API key visit your organization account in PPG.
 3. Steps to generate FCM v1 credentials and upload them in PPG APP:
@@ -32,6 +32,30 @@ Application is built using Jetpack Compose / Material3 / Retrofit2 / DaggerHilt 
    * Navigate to KEYS tab → ADD KEY → CREATE NEW KEY (JSON type)
    * Download the file and upload it in PushPushGo Application (https://next.pushpushgo.com/projects/yourProjectID/settings/integration/fcm)
 
+## Environment (production / master1)
+
+The app talks to a single PushPushGo backend, selected in `common/PPGEnvironment.kt`:
+
+```kotlin
+const val IS_PRODUCTION = true    // false -> https://api.master1.qappg.co
+```
+
+That flag drives all three consumers at once — the push SDK (`isProduction` in `Application.kt`), the In-App Messages SDK (`baseUrl`) and the transactional API (`AppModule.kt`). **API keys are environment-specific**, so the credentials in `local.properties` must come from the same environment as the flag, otherwise requests fail with 401.
+
+Note that `PushPushGo.getInstance(this)` — the single-argument form — always targets production. Selecting an environment requires the longer overload with the credentials passed explicitly:
+
+```kotlin
+PushPushGo.getInstance(
+    application = this,
+    apiKey = PPGMetaData.getApiKey(),
+    projectId = PPGMetaData.getProjectId(),
+    isProduction = PPGEnvironment.IS_PRODUCTION,
+    isDebug = !PPGEnvironment.IS_PRODUCTION,
+)
+```
+
+With `isProduction = false` and no `customBaseUrl` the SDK defaults to `api.master1.qappg.co`; pass `customBaseUrl` to point at any other environment.
+
 ## SDK Functionalities
 App implements some of PPG android-sdk methods, as well as a transactional API for sending push notifications:
 * **Register** - register subscriber
@@ -40,10 +64,11 @@ App implements some of PPG android-sdk methods, as well as a transactional API f
 * **Is Subscribed** - returns subscriber status
 * **Send beacon** - add tag with label to your subscriber by sending beacon
 * **Send Push Notification** - send a test transactional push notification to your subscriber
+* **Live Activities** - subscribe to a live notification campaign and render live updates (see the Live Activities section)
 
 ## In-App Messages
 
-The app integrates the [PushPushGo In-App Messages SDK](https://github.com/ppgco/android-sdk) (`com.github.ppgco.android-sdk:inappmessages:3.1.0`).
+The app integrates the [PushPushGo In-App Messages SDK](https://github.com/ppgco/android-sdk) (`com.github.ppgco.android-sdk:inappmessages:3.2.0`).
 
 ### Initialization
 
@@ -100,6 +125,68 @@ The dedicated **In-App Messages** screen (`InAppMessagesScreen.kt`) lets you tes
 |---------|-----------|
 | `ENTER` | Shown on app open / any route navigation (handled automatically by NavGraph setup) |
 | `CUSTOM_TRIGGER` | Call `showMessagesOnTrigger(key, value)` with a matching key/value |
+
+## Live Activities
+
+Live Activities (Android 16 "Live Updates") are real-time notifications that keep updating themselves from backend pushes — the Android counterpart of iOS Live Activities. The SDK renders them with the Android 16 `ProgressStyle` template; the first available template is `FOOTBALL_MATCH_TRACKING` (team crests, live score, match phase, per-second game clock, progress bar with break indicators).
+
+**Requirements**
+
+| Requirement | Notes |
+|---|---|
+| Android 16 (API 36) device | On older devices Live Activity pushes are ignored — check `isLiveActivitiesSupported()` |
+| PushPushGo SDK `3.2.0`+ | Live Activities are not available in earlier releases |
+| Registered subscriber | Register on the **SDK section** screen before subscribing |
+| `POST_NOTIFICATIONS` granted | Requested by `MainActivity` |
+
+`POST_PROMOTED_NOTIFICATIONS` (required for promoted Live Updates) is declared by the SDK's own manifest — nothing to add in the app.
+
+### Live Activities Screen
+
+The dedicated **Live Activities** screen (`presentation/screens/liveactivities/`) has two sections:
+
+**Subscription** — the real flow. `subscribeToLiveActivity(id)` registers the device on a live notification campaign created in PPG, and the backend takes over from there: it pushes `start` / `update` / `end` events and the SDK renders them. Subscribing to an already running campaign renders its current state immediately (late-join catch-up). The returned LA subscriber id is persisted by the SDK, so `unsubscribeFromLiveActivity(id)` only needs the live notification id.
+
+**Local simulation** — testing without a backend. `simulateLiveActivityPush(map)` accepts exactly the envelope an FCM data message carries, so the whole parse → manage → render pipeline runs locally. The buttons start a match, score goals, advance phases (`FIRST_HALF` → `HALF_TIME_BREAK` → `SECOND_HALF` → `FULL_TIME`), push a transient "hot message" and end the match. Envelopes are built in `data/liveactivity/LiveActivityDemoPayloads.kt`.
+
+### SDK methods used
+
+| Method | Where |
+|---|---|
+| `isLiveActivitiesSupported()` | `LiveActivitiesRepositoryImplementation` |
+| `subscribeToLiveActivity(id)` / `unsubscribeFromLiveActivity(id)` | `SubscribeToLiveActivityUC` / `UnsubscribeFromLiveActivityUC` |
+| `getLiveActivitySubscriberId(id)` | subscription status readout |
+| `getActiveLiveActivities()` / `isLiveActivityActive(id)` | "Tracked by the SDK" section |
+| `simulateLiveActivityPush(data)` | local simulation buttons |
+| `handleLiveActivityClick(intent)` | `SplashScreenActivity` + `MainActivity` |
+
+`subscribeToLiveActivity` / `unsubscribeFromLiveActivity` return a Guava `ListenableFuture`; the repository bridges it to coroutines with `await()` (`kotlinx-coroutines-guava`).
+
+### Handling clicks
+
+A Live Activity click opens the **launcher activity** — `SplashScreenActivity` in this app — with the click details as intent extras, so `handleLiveActivityClick(intent)` is called there (and in `MainActivity`, per the SDK docs):
+
+```kotlin
+PushPushGo.getInstance().handleLiveActivityClick(intent)
+```
+
+It reports the click analytics (body tap vs. action button is detected automatically) and opens the deep link the notification carries. Pass `openDeepLink = false` to receive the link and route it yourself.
+
+### Deep link routing
+
+`Application.kt` overrides `notificationHandler` once — a single routing point for regular push links **and** Live Activity links:
+
+```kotlin
+notificationHandler = { _, url, overrideFlags -> routeLink(url, overrideFlags) }
+```
+
+`app://www.example.com/...` links are sent to `MainActivity`, which forwards the URI to the NavGraph deep links (`app://www.example.com/live-activities` opens the Live Activities screen); anything else (https etc.) is left to the system. Without overriding the handler the SDK resolves links with a plain `ACTION_VIEW` intent, which works as well as long as a matching intent-filter exists.
+
+The demo campaign configuration also defines three action buttons — `OPEN_APP`, `REDIRECT` (opens the docs) and `CLOSE` (dismisses the activity) — which is the Android maximum.
+
+### Analytics
+
+Reported by the SDK automatically: `started` (rendered on the device), `clicked` (body tap), `clicked_1` / `clicked_2` (action buttons), `closed` (dismissed).
 
 ## Transactional API
 In transactional API section you can find buttons which implement some of transactional endpoints (https://docs.pushpushgo.company/developers-guide/rest-api/transactional-push).

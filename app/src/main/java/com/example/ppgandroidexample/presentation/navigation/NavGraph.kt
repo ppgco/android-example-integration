@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.ppgandroidexample.presentation.screens.home.HomeScreen
 import com.example.ppgandroidexample.presentation.screens.inappmessages.InAppMessagesScreen
+import com.example.ppgandroidexample.presentation.screens.liveactivities.LiveActivitiesScreen
 import com.example.ppgandroidexample.presentation.screens.transactional.TransactionalScreen
 import com.pushpushgo.inappmessages.utils.InAppMessageHelper
 
@@ -37,6 +38,12 @@ fun SetUpNavGraph(
         }
         composable(route = Screens.InAppMessages.route) {
             InAppMessagesScreen(navController = navController)
+        }
+        // Deep link target for taps on a Live Activity notification - the SDK
+        // passes the campaign's url through to `notificationHandler` (Application.kt)
+        composable(route = Screens.LiveActivities.route,
+            deepLinks = listOf(navDeepLink { uriPattern = "app://www.example.com/live-activities" })) {
+            LiveActivitiesScreen(navController = navController)
         }
     }
 }

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ppgandroidexample.presentation.common_components.MessageSnackbar
 import com.example.ppgandroidexample.presentation.common_components.SendBeaconCard
@@ -149,6 +149,22 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Nav to in-app messages section",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = { navController.navigate(Screens.LiveActivities.route) },
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text(
+                    text = "Nav to live activities section",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,

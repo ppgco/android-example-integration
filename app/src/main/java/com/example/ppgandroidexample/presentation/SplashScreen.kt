@@ -66,6 +66,13 @@ class SplashScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // A Live Activity click opens the launcher activity - which is this one -
+        // with the click details as intent extras. This reports the click analytics
+        // (body tap and action buttons are told apart automatically) and opens the
+        // deep link through `notificationHandler` (see Application.kt).
+        PushPushGo.getInstance().handleLiveActivityClick(intent)
+
         setContent {
             navController = rememberNavController()
             SplashScreenContent()
@@ -76,5 +83,11 @@ class SplashScreenActivity : AppCompatActivity() {
             startActivity(mainIntent)
             finish()
         }, splashDisplayLength)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        PushPushGo.getInstance().handleLiveActivityClick(intent)
     }
 }

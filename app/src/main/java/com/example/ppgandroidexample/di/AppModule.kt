@@ -1,10 +1,14 @@
 package com.example.ppgandroidexample.di
 
+import android.util.Log
+import com.example.ppgandroidexample.common.PPGEnvironment
 import com.example.ppgandroidexample.common.PPGMetaData
 import com.example.ppgandroidexample.data.remote.PPGTransactionalAPI
 import com.example.ppgandroidexample.data.repository.HomeScreenRepositoryImplementation
+import com.example.ppgandroidexample.data.repository.LiveActivitiesRepositoryImplementation
 import com.example.ppgandroidexample.data.repository.TransactionalScreenRepositoryImplementation
 import com.example.ppgandroidexample.domain.repository.HomeScreenRepository
+import com.example.ppgandroidexample.domain.repository.LiveActivitiesRepository
 import com.example.ppgandroidexample.domain.repository.TransactionalScreenRepository
 import dagger.Module
 import dagger.Provides
@@ -29,6 +33,30 @@ class AuthInterceptor(private val apiKey: String) : Interceptor {
     }
 }
 
+/**
+ * Logs the response body of failed transactional API calls. Retrofit turns them
+ * into an `HttpException` whose message is only "HTTP 400 Bad Request", which
+ * hides the validation details the API actually returns.
+ */
+class ErrorLoggingInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val response = chain.proceed(chain.request())
+        if (!response.isSuccessful) {
+            // peekBody leaves the body readable for Retrofit downstream
+            val body = runCatching { response.peekBody(PEEK_LIMIT_BYTES).string() }.getOrNull()
+            Log.w(
+                "PPGTransactional",
+                "${response.code} ${chain.request().method} ${chain.request().url}: $body"
+            )
+        }
+        return response
+    }
+
+    private companion object {
+        const val PEEK_LIMIT_BYTES = 8192L
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -47,13 +75,23 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideLiveActivitiesRepository(): LiveActivitiesRepository {
+        return LiveActivitiesRepositoryImplementation()
+    }
+
+    @Provides
+    @Singleton
     fun providePPGTransactionalAPI(): PPGTransactionalAPI {
         val apiKey = PPGMetaData.getApiKey()
         val client = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(apiKey))
+            .apply {
+                if (!PPGEnvironment.IS_PRODUCTION) addInterceptor(ErrorLoggingInterceptor())
+            }
             .build()
         return Retrofit.Builder()
-            .baseUrl("https://api.pushpushgo.com")
+            // Same environment as both SDKs - the API key is environment-specific
+            .baseUrl(PPGEnvironment.apiBaseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
